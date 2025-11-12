@@ -1,0 +1,28 @@
+{
+  "env": {
+    "browser": true,
+    "es2020": true, // 建议更新到较新的版本，例如 es2020 或 es2021
+    "node": true
+  },
+  // 核心改动：使用 vue-eslint-parser 作为 .vue 文件的主要解析器
+  "parser": "vue-eslint-parser",
+  "extends": [
+    "eslint:recommended",
+    // 添加 vue 插件的推荐配置
+    "plugin:vue/vue3-recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
+    "plugin:import/electron",
+    "plugin:import/typescript"
+  ],
+  "parserOptions": {
+    // 核心改动：将 @typescript-eslint/parser 移到这里，用于解析 <script> 标签内的代码
+    "parser": "@typescript-eslint/parser",
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {
+    // 在这里添加你需要的其他 ESLint 规则
+  }
+}
