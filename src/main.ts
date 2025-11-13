@@ -1,14 +1,15 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
-import * as trace_events from "node:trace_events";
+import OpenAI from 'openai';
+import 'dotenv/config';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
-const createWindow = () => {
+const createWindow = async () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1024,
@@ -30,8 +31,22 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-};
+    const client = new OpenAI({
+        apiKey: process.env.DASHSCOPE_API_KEY, // https://console.bce.baidu.com/iam/#/iam/apikey/list
+        baseURL: 'https://qianfan.baidubce.com/v2/', // 千帆ModelBuilder平台地址
+    });
 
+    const stream = await client.chat.completions.create({
+        messages: [{ role: 'user', content: '你好' }],
+        model: 'deepseek-v3.2-think',
+        stream: true,
+    });
+
+    for await (const chunk of stream) {
+        process.stdout.write(chunk.choices[0]?.delta?.content || '');
+    }
+
+};
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
