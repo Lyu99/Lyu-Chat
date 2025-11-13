@@ -5,7 +5,7 @@
         v-for="item of items"
         :key="item.id"
     >
-      <a href="#">
+      <RouterLink :to="`/conversation/${item.id}`">
         <div class="flex justify-between items-center text-sm leading-5 text-gray-500">
           <span>{{ item.selectedModel }}</span>
           <span>{{ item.updatedAt }}</span>
@@ -13,12 +13,11 @@
         <h2 class="font-semibold leading-6 text-gray-900 truncate">
           {{ item.title }}
         </h2>
-      </a>
+      </RouterLink>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { defineProps } from 'vue';
 import { ConversationProps } from '../types';
 defineProps<{ items: ConversationProps[] }>()
 </script>
