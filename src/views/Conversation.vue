@@ -11,11 +11,11 @@
 </div>
 </template>
 <script setup lang="ts">
-import {ref, onMounted, watch, computed} from "vue";
+import {ref, onMounted, watch, computed, ComputedRef} from "vue";
 import { useRoute } from 'vue-router';
 import MessageList from "../components/MessageList.vue";
 import SendMessage from "../components/SendMessage.vue";
-import { MessageProps } from "../types";
+import { ConversationProps, MessageProps} from "../types";
 import { db } from "../db";
 import dayjs from "dayjs";
 import { useConversationStore } from "../store/conversation";
@@ -26,7 +26,7 @@ let currentConversationId = ref(parseInt(route.params.id as string));
 const initMessageId = parseInt(route.query.init as string);
 const conversationStore = useConversationStore();
 const messageStore = useMessageStore();
-const conversation = computed(() => conversationStore.getConversationId(currentConversationId.value))
+const conversation: ComputedRef<ConversationProps | undefined> = computed(() => conversationStore.getConversationId(currentConversationId.value));
 const messageList = computed(() => messageStore.items);
 const sendValue = ref("");
 const sendMessageArr = computed(() => messageList.value.filter(i => i.status !== "loading").map((i) => {

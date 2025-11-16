@@ -31,6 +31,5 @@ export const useConversationStore = defineStore("conversation", {
         getConversationId: (state) => (id: number) => {
             return state.items.find(item => item.id === id);
         },
-
     }
 })
