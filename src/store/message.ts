@@ -41,6 +41,9 @@ export const useMessageStore = defineStore('message', {
     getters: {
         getLastQuestion: (state) => (conversationId: number) => {
             return state.items.findLast(i => i.conversationId === conversationId && i.type === "question");
+        },
+        getIsDisabled: (state) => {
+            return state.items.some(i => i.status === "streaming" || i.status === "loading");
         }
     }
 })

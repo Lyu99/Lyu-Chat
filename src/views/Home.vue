@@ -4,7 +4,7 @@
       <ProviderSelect :items="providers" v-model="selectProvider"></ProviderSelect>
     </div>
     <div class="h-[15%] flex items-center">
-      <SendMessage v-model="inMessageText" @on-send="creatConversation"></SendMessage>
+      <SendMessage v-model="inMessageText" @on-send="creatConversation" :disabled="selectProvider === ''"></SendMessage>
     </div>
   </div>
 </template>
