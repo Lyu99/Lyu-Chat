@@ -43,9 +43,12 @@
     "vite": "^5.4.21"
   },
   "dependencies": {
+    "dayjs": "^1.11.19",
+    "dexie": "^4.2.1",
     "dotenv": "^17.2.3",
     "electron-squirrel-startup": "^1.0.1",
     "openai": "^6.8.1",
+    "pinia": "^3.0.4",
     "radix-vue": "^1.9.17",
     "vue": "^3.5.24",
     "vue-router": "^4.6.3"

@@ -20,7 +20,7 @@
         <SelectViewport class="p-[5px]">
           <div v-for="item of items" :key="item.id">
             <SelectLabel class="flex items-center px-[25px] text-xs leading-[25px] text-mauve11">
-              <img :src="item.avatar" alt="" class="w-[5px] h-[5px] mr-2 rounded" >
+              <img :src="item.avatar" alt="" class="w-[20px] h-[20px] mr-2 rounded" >
               {{ item.name }}
             </SelectLabel>
             <SelectGroup>

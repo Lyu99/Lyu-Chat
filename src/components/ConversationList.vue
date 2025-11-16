@@ -8,7 +8,7 @@
       <RouterLink :to="`/conversation/${item.id}`">
         <div class="flex justify-between items-center text-sm leading-5 text-gray-500">
           <span>{{ item.selectedModel }}</span>
-          <span>{{ item.updatedAt }}</span>
+          <span>{{ dayjs(item.updatedAt).format("YYYY-MM-DD") }}</span>
         </div>
         <h2 class="font-semibold leading-6 text-gray-900 truncate">
           {{ item.title }}
@@ -19,6 +19,7 @@
 </template>
 <script setup lang="ts">
 import { ConversationProps } from '../types';
+import dayjs from "dayjs";
 defineProps<{ items: ConversationProps[] }>()
 </script>
 <style lang="ts" scoped>

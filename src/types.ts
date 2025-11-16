@@ -1,10 +1,10 @@
 export interface ConversationProps {
-  id: number;
-  title: string;
-  selectedModel: string;
-  createdAt: string;
-  updatedAt: string;
-  providerId: number;
+    id: number;
+    title: string;
+    selectedModel: string;
+    createdAt: string;
+    updatedAt: string;
+    providerId: number;
 }
 export interface ProviderProps {
     id: number;
@@ -18,11 +18,29 @@ export interface ProviderProps {
 }
 export type MessageStatus = 'loading' | 'streaming' | 'finished';
 export interface MessageProps {
-  id: number;
-  conversationId: number;
-  type: 'question' | 'answer';
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  status?: MessageStatus;
+    id: number;
+    conversationId: number;
+    type: 'question' | 'answer';
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    status?: MessageStatus;
 }
+export interface CreateChatProps {
+    messages: {
+        role: string,
+        content: string
+    }[];
+    providerName: string;
+    selectedModel: string;
+    messageId: number;
+}
+export interface UpdateStreamProps {
+    messageId: number;
+    data: {
+        is_end: string;
+        result: string;
+    }
+}
+
+export type OnUpdateCallBack = (data: UpdateStreamProps) => void;

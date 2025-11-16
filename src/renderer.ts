@@ -5,7 +5,9 @@ import { createRouter, createMemoryHistory } from 'vue-router';
 import Home from "./views/Home.vue";
 import Conversation from "./views/Conversation.vue";
 import Setting from "./views/Setting.vue";
+import { createPinia } from 'pinia'
 
+const pinia = createPinia()
 const routes = [
     {
         path: '/',
@@ -26,4 +28,4 @@ const router = createRouter({
     routes
 });
 
-createApp(App).use(router).mount('#app');
+createApp(App).use(router).use(pinia).mount('#app');

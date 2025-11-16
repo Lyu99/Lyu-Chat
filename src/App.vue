@@ -2,7 +2,7 @@
   <div class="flex items-center justify-between h-screen">
     <div class="w-[300px] bg-gray-200 h-full border-r border-gray-300">
       <div class="h-[90%] overflow-y-auto">
-        <ConversationList :items="conversationData" />
+        <ConversationList :items="conversations" />
       </div>
       <div class="h-[10%] grid grid-cols-2 gap-2 p-2">
         <RouterLink to="/">
@@ -23,10 +23,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import { computed, onMounted } from "vue";
 import ConversationList from "./components/ConversationList.vue";
-import { conversationData } from "./testData";
 import Button from "./components/Button.vue";
+import { initProviders } from "./db";
+import { useConversationStore } from "./store/conversation";
+const conversationStore = useConversationStore();
+const conversations = computed(() => conversationStore.items);
+onMounted(async () => {
+  await initProviders();
+  await conversationStore.fetchConversations();
+})
 </script>
 <style scoped>
 

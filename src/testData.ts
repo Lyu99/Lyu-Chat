@@ -28,21 +28,23 @@ export const conversationData: ConversationProps[] = [
 export const providers: ProviderProps[] = [
     {
         id: 1,
-        name: "通一千问",
-        desc: "通一千问",
-        models: ['qwen-turbo', 'qwen-turbo', 'qwen-turbo'],
-        avatar: "1",
-        createdAt: "2020-09-09",
-        updatedAt: "2020-09-09"
+        name: "qianfan",
+        title: "百度千帆",
+        desc: "百度千帆",
+        models: ['ERNIE 5.0', 'DeepSeek-V3'],
+        avatar: "https://aip-static.cdn.bcebos.com/landing/product/ernie-bote321e5.png",
+        createdAt: "",
+        updatedAt: ""
     },
     {
         id: 2,
-        name: "通一千问",
-        desc: "通一千问",
-        models: ['qwen-turbo', 'qwen-turbo', 'qwen-turbo'],
-        avatar: "1",
-        createdAt: "2020-09-09",
-        updatedAt: "2020-09-09"
+        name: "dashscope",
+        title: "阿里灵积",
+        desc: "阿里灵积",
+        models: ['qwen-plus', 'qwen3-vl-plus'],
+        avatar: "https://qph.cf2.poecdn.net/main-thumb-pb-4160791-200-qlqunomdvkyitpedtghnhsgjlutapgfl.jpeg",
+        createdAt: "",
+        updatedAt: ""
     }
 ]
 export const message: MessageProps[] = [
