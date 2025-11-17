@@ -7,6 +7,7 @@ import Conversation from "./views/Conversation.vue";
 import Setting from "./views/Setting.vue";
 import { createPinia } from 'pinia';
 import { useConversationStore } from "./store/conversation";
+import "highlight.js/styles/github-dark.min.css";
 
 const pinia = createPinia()
 const routes = [

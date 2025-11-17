@@ -4,23 +4,24 @@
   <span class="text-sm text-gray-500">{{ dayjs(conversation.updatedAt).format("YYYY-MM-DD") }}</span>
 </div>
 <div class="w-[80%] mx-auto h-[75%] overflow-y-auto pt-2">
-  <MessageList :messageList="messageList" />
+  <MessageList :messageList="messageList" ref="messageListRef" />
 </div>
 <div class="w-[80%] mx-auto h-[15%] flex items-center">
   <SendMessage @on-send="sendMessage" v-model="sendValue" :disabled="messageStore.getIsDisabled" />
 </div>
 </template>
 <script setup lang="ts">
-import {ref, onMounted, watch, computed, ComputedRef} from "vue";
+import {ref, onMounted, watch, computed, ComputedRef, nextTick} from "vue";
 import { useRoute } from 'vue-router';
 import MessageList from "../components/MessageList.vue";
 import SendMessage from "../components/SendMessage.vue";
-import { ConversationProps, MessageProps} from "../types";
+import { ConversationProps, MessageProps, MessageListRefProps } from "../types";
 import { db } from "../db";
 import dayjs from "dayjs";
 import { useConversationStore } from "../store/conversation";
 import { useMessageStore } from "../store/message";
 
+const messageListRef = ref<MessageListRefProps>()
 const route = useRoute();
 let currentConversationId = ref(parseInt(route.params.id as string));
 const initMessageId = parseInt(route.query.init as string);
@@ -32,19 +33,25 @@ const sendValue = ref("");
 const sendMessageArr = computed(() => messageList.value.filter(i => i.status !== "loading").map((i) => {
   return {
     role: i.type === "question" ? "user" : "assistant",
-    content: i.content
+    content: i.content,
+    ...(i.imagePath && { imagePath: i.imagePath })
   }
 }))
 
-const sendMessage = async (question: string) => {
+const sendMessage = async (question: string, imagesPath?: string) => {
   if(question) {
+    let copyImagePath: string | undefined;
+    if(imagesPath) {
+      copyImagePath = await window.electronAPI.copyImageToUserDir(imagesPath);
+    }
     const date = new Date().toISOString();
     await messageStore.createMessage({
       content: question,
       conversationId: currentConversationId.value,
       updatedAt: date,
       createdAt: date,
-      type: "question"
+      type: "question",
+      ...(imagesPath && { imagePath: copyImagePath })
     })
     await createInitMessage();
     sendValue.value = "";
@@ -61,6 +68,7 @@ const createInitMessage = async () => {
     status: "loading"
   }
   const messageId = await messageStore.createMessage(createData);
+  await viewIntoEnd();
   if(conversation.value) {
     const provider = await db.providers.where({ id: conversation.value.providerId }).first();
     if(provider) {
@@ -74,18 +82,28 @@ const createInitMessage = async () => {
   }
 }
 
+const viewIntoEnd = async () => {
+  await nextTick();
+  if(messageListRef.value) {
+    messageListRef.value.ref.scrollIntoView({ block: "end", behavior: "smooth" })
+  }
+}
+
 watch(() => route.params.id,  async (newVal: string) => {
   currentConversationId.value = parseInt(newVal);
   await messageStore.fetchMessageByConversation(currentConversationId.value);
+  await viewIntoEnd();
 })
 
 onMounted(async () => {
   await messageStore.fetchMessageByConversation(currentConversationId.value);
+  await viewIntoEnd();
   if(initMessageId) {
     await createInitMessage();
   }
   window.electronAPI.onUpdateMessage(async (stream) => {
     await messageStore.updateMessage(stream);
+    await viewIntoEnd();
   })
 })
 </script>

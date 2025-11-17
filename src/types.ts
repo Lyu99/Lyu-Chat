@@ -25,11 +25,13 @@ export interface MessageProps {
     createdAt: string;
     updatedAt: string;
     status?: MessageStatus;
+    imagePath?: string;
 }
 export interface CreateChatProps {
     messages: {
         role: string,
-        content: string
+        content: string,
+        imagePath?: string;
     }[];
     providerName: string;
     selectedModel: string;
@@ -44,3 +46,6 @@ export interface UpdateStreamProps {
 }
 
 export type OnUpdateCallBack = (data: UpdateStreamProps) => void;
+export interface MessageListRefProps {
+    ref: HTMLDivElement
+}

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, protocol, net } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { ipcMain } from "electron";
@@ -6,25 +6,62 @@ import { CreateChatProps } from "./types";
 import OpenAI from 'openai';
 import 'dotenv/config';
 import { ModelValue } from "./enums";
+import fs from 'fs/promises';
+import { messageMerge } from "./helper";
+import url from "url";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
-
+protocol.registerSchemesAsPrivileged([
+    {
+        scheme: "safe-file",
+        privileges: {
+            standard: true,
+            secure: true,
+            supportFetchAPI: true,
+        }
+    }
+])
 const createWindow = async () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 768,
+    width: 1280,
+    height: 1024,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
     autoHideMenuBar: true,
   });
 
+  protocol.handle("safe-file", (request) => {
+      const userDataPath = app.getPath('userData')
+      const imageDir = path.join(userDataPath, 'images')
+      const filePath = path.join(
+          decodeURIComponent(request.url.slice('safe-file:/'.length))
+      )
+      const filename = path.basename(filePath)
+      const fileAddr = path.join(imageDir, filename)
+      const newFilePath = url.pathToFileURL(fileAddr).toString()
+      return net.fetch(newFilePath)
+  });
+
+  ipcMain.handle("copy-image-to-user-dir", async (e, sourcePath: string) => {
+      const userDataPath = app.getPath('userData');
+      const imageDir = path.join(userDataPath, 'images');
+      await fs.mkdir(imageDir, {
+          recursive: true,
+      });
+      const fileName = path.basename(sourcePath);
+      const destPath = path.join(imageDir, fileName);
+      await fs.copyFile(sourcePath, destPath);
+      return destPath;
+  })
+
   ipcMain.on("start-chat", async (event, data: CreateChatProps) => {
       const { providerName, messages, selectedModel, messageId } = data;
+      const newMessage = await messageMerge(messages);
       if(providerName === "qianfan") {
           const client = new OpenAI({
               apiKey: process.env.DASHSCOPE_API_KEY, // https://console.bce.baidu.com/iam/#/iam/apikey/list
@@ -32,7 +69,7 @@ const createWindow = async () => {
           });
 
           const stream = await client.chat.completions.create({
-              messages: messages as any,
+              messages: newMessage as any,
               model: ModelValue[selectedModel as keyof typeof ModelValue],
               stream: true,
           });
@@ -61,11 +98,8 @@ const createWindow = async () => {
               }
           );
           const stream = await client.chat.completions.create({
-              model: "qwen-plus",
-              messages: [
-                  { role: "system", content: "You are a helpful assistant." },
-                  { role: "user", content: "请介绍一下自己" },
-              ],
+              model: ModelValue[selectedModel as keyof typeof ModelValue],
+              messages: newMessage as any,
               stream: true,
               // 目的：在最后一个chunk中获取本次请求的Token用量。
               stream_options: { include_usage: true },
