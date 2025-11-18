@@ -2,13 +2,14 @@ import { app, BrowserWindow, protocol, net } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { ipcMain } from "electron";
-import { CreateChatProps } from "./types";
+import { CreateChatProps, AppConfigProps } from "./types";
 import OpenAI from 'openai';
 import 'dotenv/config';
 import { ModelValue } from "./enums";
 import fs from 'fs/promises';
 import { messageMerge } from "./helper";
 import url from "url";
+import { getConfig, saveConfig, updateConfig } from "./config";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -58,6 +59,20 @@ const createWindow = async () => {
       await fs.copyFile(sourcePath, destPath);
       return destPath;
   })
+
+  // 配置相关的 IPC handlers
+  ipcMain.handle("config:get", async () => {
+      return await getConfig();
+  });
+
+  ipcMain.handle("config:save", async (e, config: AppConfigProps) => {
+      await saveConfig(config);
+      return config;
+  });
+
+  ipcMain.handle("config:update", async (e, partialConfig: Partial<AppConfigProps>) => {
+      return await updateConfig(partialConfig);
+  });
 
   ipcMain.on("start-chat", async (event, data: CreateChatProps) => {
       const { providerName, messages, selectedModel, messageId } = data;
