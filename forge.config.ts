@@ -6,6 +6,7 @@ import { MakerZIP } from '@electron-forge/maker-zip';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import { PublisherGithub } from '@electron-forge/publisher-github';
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -64,6 +65,16 @@ const config: ForgeConfig = {
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
+  ],
+  publishers: [
+    new PublisherGithub({
+      repository: {
+        owner: 'your-github-username',  // 替换为你的 GitHub 用户名或组织名
+        name: 'your-repo-name'         // 替换为你的仓库名
+      },
+      prerelease: false,  // 是否作为预发布版本
+      draft: true,        // 是否创建为草稿（建议先设为 true 测试）
+    })
   ],
 };
 
