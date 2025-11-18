@@ -69,8 +69,8 @@ const config: ForgeConfig = {
   publishers: [
     new PublisherGithub({
       repository: {
-        owner: 'your-github-username',  // 替换为你的 GitHub 用户名或组织名
-        name: 'your-repo-name'         // 替换为你的仓库名
+        owner: 'lyuping99',  // 替换为你的 GitHub 用户名或组织名
+        name: 'Lyu-Chat'         // 替换为你的仓库名
       },
       prerelease: false,  // 是否作为预发布版本
       draft: true,        // 是否创建为草稿（建议先设为 true 测试）
