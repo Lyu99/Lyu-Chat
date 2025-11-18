@@ -7,12 +7,12 @@
       <div class="h-[10%] grid grid-cols-2 gap-2 p-2">
         <RouterLink to="/">
           <Button icon-name="radix-icons:chat-bubble" class="w-full">
-            新建聊天
+            {{  t('common.newChat')  }}
           </Button>
         </RouterLink>
         <RouterLink to="/setting">
           <Button icon-name="radix-icons:gear" plain class="w-full">
-            应用设置
+            {{  t('common.setting')  }}
           </Button>
         </RouterLink>
       </div>
@@ -28,8 +28,10 @@ import ConversationList from "./components/ConversationList.vue";
 import Button from "./components/Button.vue";
 import { initProviders } from "./db";
 import { useConversationStore } from "./store/conversation";
+import { useI18n } from 'vue-i18n';
 const conversationStore = useConversationStore();
 const conversations = computed(() => conversationStore.items);
+const { t } = useI18n();
 onMounted(async () => {
   await initProviders();
   await conversationStore.fetchConversations();

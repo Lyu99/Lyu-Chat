@@ -106,14 +106,15 @@
         <AccordionRoot 
           type="single" 
           :collapsible="true"
-          class="w-full bg-white rounded-lg border border-gray-200 shadow-sm"
+          class="w-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden"
         >
-          <AccordionItem value="model-config" class="border-b border-gray-200">
+          <!-- 百度千帆配置 -->
+          <AccordionItem value="baidu-qianfan" class="border-b border-gray-200">
             <AccordionHeader class="flex">
               <AccordionTrigger 
                 class="flex flex-1 items-center justify-between px-6 py-4 text-left text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors group"
               >
-                <span>模型配置</span>
+                <span>百度千帆</span>
                 <Icon 
                   icon="radix-icons:chevron-down" 
                   class="h-5 w-5 text-gray-500 transition-transform duration-200 group-data-[state=open]:rotate-180" 
@@ -126,44 +127,162 @@
               <div class="space-y-4">
                 <!-- API Key 输入框 -->
                 <div class="form-field">
-                  <label for="apiKey" class="block text-sm font-medium text-gray-700 mb-2">
-                    API Key
+                  <label for="baidu-apiKey" class="block text-sm font-medium text-gray-700 mb-2">
+                    API Key <span class="text-red-500">*</span>
                   </label>
                   <input
-                    id="apiKey"
-                    v-model="modelConfig.apiKey"
+                    id="baidu-apiKey"
+                    v-model="baiduConfig.apiKey"
                     type="password"
                     placeholder="请输入 API Key"
-                    class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
+                    :class="[
+                      'w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white text-gray-900 placeholder-gray-400',
+                      baiduErrors.apiKey ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-transparent'
+                    ]"
+                    @blur="validateBaiduField('apiKey')"
+                    @input="clearBaiduError('apiKey')"
                   />
+                  <p v-if="baiduErrors.apiKey" class="mt-1 text-xs text-red-500">{{ baiduErrors.apiKey }}</p>
                 </div>
 
                 <!-- Base URL 输入框 -->
                 <div class="form-field">
-                  <label for="baseURL" class="block text-sm font-medium text-gray-700 mb-2">
-                    Base URL
+                  <label for="baidu-baseURL" class="block text-sm font-medium text-gray-700 mb-2">
+                    Base URL <span class="text-red-500">*</span>
                   </label>
                   <input
-                    id="baseURL"
-                    v-model="modelConfig.baseURL"
+                    id="baidu-baseURL"
+                    v-model="baiduConfig.baseURL"
                     type="text"
-                    placeholder="https://api.openai.com/v1"
-                    class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
+                    placeholder="请输入 Base URL"
+                    :class="[
+                      'w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white text-gray-900 placeholder-gray-400',
+                      baiduErrors.baseURL ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-transparent'
+                    ]"
+                    @blur="validateBaiduField('baseURL')"
+                    @input="clearBaiduError('baseURL')"
                   />
+                  <p v-if="baiduErrors.baseURL" class="mt-1 text-xs text-red-500">{{ baiduErrors.baseURL }}</p>
                 </div>
 
                 <!-- Model Name 输入框 -->
                 <div class="form-field">
-                  <label for="modelName" class="block text-sm font-medium text-gray-700 mb-2">
-                    Model Name
+                  <label for="baidu-modelName" class="block text-sm font-medium text-gray-700 mb-2">
+                    Model Name <span class="text-red-500">*</span>
                   </label>
                   <input
-                    id="modelName"
-                    v-model="modelConfig.modelName"
+                    id="baidu-modelName"
+                    v-model="baiduConfig.modelName"
                     type="text"
-                    placeholder="gpt-3.5-turbo"
-                    class="w-full px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-400"
+                    placeholder="请输入 Model Name"
+                    :class="[
+                      'w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white text-gray-900 placeholder-gray-400',
+                      baiduErrors.modelName ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-transparent'
+                    ]"
+                    @blur="validateBaiduField('modelName')"
+                    @input="clearBaiduError('modelName')"
                   />
+                  <p v-if="baiduErrors.modelName" class="mt-1 text-xs text-red-500">{{ baiduErrors.modelName }}</p>
+                </div>
+
+                <!-- 保存按钮 -->
+                <div class="pt-2">
+                  <button
+                    @click="saveBaiduConfig"
+                    class="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                  >
+                    保存配置
+                  </button>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <!-- 阿里灵积配置 -->
+          <AccordionItem value="ali-lingji" class="border-b border-gray-200">
+            <AccordionHeader class="flex">
+              <AccordionTrigger 
+                class="flex flex-1 items-center justify-between px-6 py-4 text-left text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors group"
+              >
+                <span>阿里灵积</span>
+                <Icon 
+                  icon="radix-icons:chevron-down" 
+                  class="h-5 w-5 text-gray-500 transition-transform duration-200 group-data-[state=open]:rotate-180" 
+                />
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent 
+              class="px-6 pb-6 pt-2 text-sm text-gray-700 data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"
+            >
+              <div class="space-y-4">
+                <!-- API Key 输入框 -->
+                <div class="form-field">
+                  <label for="ali-apiKey" class="block text-sm font-medium text-gray-700 mb-2">
+                    API Key <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="ali-apiKey"
+                    v-model="aliConfig.apiKey"
+                    type="password"
+                    placeholder="请输入 API Key"
+                    :class="[
+                      'w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white text-gray-900 placeholder-gray-400',
+                      aliErrors.apiKey ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-transparent'
+                    ]"
+                    @blur="validateAliField('apiKey')"
+                    @input="clearAliError('apiKey')"
+                  />
+                  <p v-if="aliErrors.apiKey" class="mt-1 text-xs text-red-500">{{ aliErrors.apiKey }}</p>
+                </div>
+
+                <!-- Base URL 输入框 -->
+                <div class="form-field">
+                  <label for="ali-baseURL" class="block text-sm font-medium text-gray-700 mb-2">
+                    Base URL <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="ali-baseURL"
+                    v-model="aliConfig.baseURL"
+                    type="text"
+                    placeholder="请输入 Base URL"
+                    :class="[
+                      'w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white text-gray-900 placeholder-gray-400',
+                      aliErrors.baseURL ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-transparent'
+                    ]"
+                    @blur="validateAliField('baseURL')"
+                    @input="clearAliError('baseURL')"
+                  />
+                  <p v-if="aliErrors.baseURL" class="mt-1 text-xs text-red-500">{{ aliErrors.baseURL }}</p>
+                </div>
+
+                <!-- Model Name 输入框 -->
+                <div class="form-field">
+                  <label for="ali-modelName" class="block text-sm font-medium text-gray-700 mb-2">
+                    Model Name <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="ali-modelName"
+                    v-model="aliConfig.modelName"
+                    type="text"
+                    placeholder="请输入 Model Name"
+                    :class="[
+                      'w-full px-4 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 bg-white text-gray-900 placeholder-gray-400',
+                      aliErrors.modelName ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-transparent'
+                    ]"
+                    @blur="validateAliField('modelName')"
+                    @input="clearAliError('modelName')"
+                  />
+                  <p v-if="aliErrors.modelName" class="mt-1 text-xs text-red-500">{{ aliErrors.modelName }}</p>
+                </div>
+
+                <!-- 保存按钮 -->
+                <div class="pt-2">
+                  <button
+                    @click="saveAliConfig"
+                    class="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                  >
+                    保存配置
+                  </button>
                 </div>
               </div>
             </AccordionContent>
@@ -223,8 +342,29 @@ const languages = ref([
 const selectedLanguage = ref<'zh-CN' | 'en-US'>('zh-CN');
 const fontSize = ref(16);
 
-// 模型配置
-const modelConfig = ref({
+// 百度千帆配置
+const baiduConfig = ref({
+  apiKey: '',
+  baseURL: '',
+  modelName: '',
+});
+
+// 百度千帆错误信息
+const baiduErrors = ref({
+  apiKey: '',
+  baseURL: '',
+  modelName: '',
+});
+
+// 阿里灵积配置
+const aliConfig = ref({
+  apiKey: '',
+  baseURL: '',
+  modelName: '',
+});
+
+// 阿里灵积错误信息
+const aliErrors = ref({
   apiKey: '',
   baseURL: '',
   modelName: '',
@@ -260,6 +400,72 @@ const handleFontSizeChange = async (value: number | undefined) => {
     console.log('字体大小已更新:', value);
   } catch (error) {
     console.error('更新字体大小失败:', error);
+  }
+};
+
+// 百度千帆验证函数
+const validateBaiduField = (field: 'apiKey' | 'baseURL' | 'modelName') => {
+  if (!baiduConfig.value[field].trim()) {
+    baiduErrors.value[field] = '此字段为必填项';
+    return false;
+  }
+  baiduErrors.value[field] = '';
+  return true;
+};
+
+const clearBaiduError = (field: 'apiKey' | 'baseURL' | 'modelName') => {
+  if (baiduConfig.value[field].trim()) {
+    baiduErrors.value[field] = '';
+  }
+};
+
+const validateBaiduForm = () => {
+  const apiKeyValid = validateBaiduField('apiKey');
+  const baseURLValid = validateBaiduField('baseURL');
+  const modelNameValid = validateBaiduField('modelName');
+  return apiKeyValid && baseURLValid && modelNameValid;
+};
+
+const saveBaiduConfig = () => {
+  if (validateBaiduForm()) {
+    console.log('百度千帆配置保存成功:', baiduConfig.value);
+    // TODO: 这里可以添加实际的保存逻辑，比如存储到 store 或者发送到后端
+    alert('百度千帆配置保存成功！');
+  } else {
+    console.log('百度千帆配置验证失败');
+  }
+};
+
+// 阿里灵积验证函数
+const validateAliField = (field: 'apiKey' | 'baseURL' | 'modelName') => {
+  if (!aliConfig.value[field].trim()) {
+    aliErrors.value[field] = '此字段为必填项';
+    return false;
+  }
+  aliErrors.value[field] = '';
+  return true;
+};
+
+const clearAliError = (field: 'apiKey' | 'baseURL' | 'modelName') => {
+  if (aliConfig.value[field].trim()) {
+    aliErrors.value[field] = '';
+  }
+};
+
+const validateAliForm = () => {
+  const apiKeyValid = validateAliField('apiKey');
+  const baseURLValid = validateAliField('baseURL');
+  const modelNameValid = validateAliField('modelName');
+  return apiKeyValid && baseURLValid && modelNameValid;
+};
+
+const saveAliConfig = () => {
+  if (validateAliForm()) {
+    console.log('阿里灵积配置保存成功:', aliConfig.value);
+    // TODO: 这里可以添加实际的保存逻辑，比如存储到 store 或者发送到后端
+    alert('阿里灵积配置保存成功！');
+  } else {
+    console.log('阿里灵积配置验证失败');
   }
 };
 </script>

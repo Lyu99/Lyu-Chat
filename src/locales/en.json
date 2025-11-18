@@ -38,7 +38,9 @@
     "loading": "Loading...",
     "success": "Success",
     "error": "Error",
-    "send": "Send"
+    "send": "Send",
+    "newChat": "New Chat",
+    "setting": "Setting"
   },
   "conversation": {
     "newChat": "New Chat",

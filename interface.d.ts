@@ -9,6 +9,9 @@ export interface IElectronAPI {
     configGet: () => Promise<AppConfigProps>;
     configSave: (config: AppConfigProps) => Promise<AppConfigProps>;
     configUpdate: (partialConfig: Partial<AppConfigProps>) => Promise<AppConfigProps>;
+    // 右键菜单相关 API
+    showContextMenu: (conversationId: number) => Promise<void>;
+    onContextMenuCommand: (callback: (data: { command: string, conversationId: number }) => void) => void;
 }
 
 declare global {

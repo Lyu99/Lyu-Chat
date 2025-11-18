@@ -38,7 +38,9 @@
     "loading": "加载中...",
     "success": "操作成功",
     "error": "操作失败",
-    "send": "发送"
+    "send": "发送",
+    "newChat": "新建聊天",
+    "setting": "应用设置"
   },
   "conversation": {
     "newChat": "新对话",

@@ -13,4 +13,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
     configGet: () => ipcRenderer.invoke("config:get"),
     configSave: (config: AppConfigProps) => ipcRenderer.invoke("config:save", config),
     configUpdate: (partialConfig: Partial<AppConfigProps>) => ipcRenderer.invoke("config:update", partialConfig),
+    // 右键菜单相关 API
+    showContextMenu: (conversationId: number) => ipcRenderer.invoke("show-context-menu", conversationId),
+    onContextMenuCommand: (callback: (data: { command: string, conversationId: number }) => void) => {
+        ipcRenderer.on("context-menu-command", (event, data) => callback(data));
+    },
 })

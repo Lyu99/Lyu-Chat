@@ -36,6 +36,12 @@ export const useMessageStore = defineStore('message', {
                     this.items[idx] = { ...this.items[idx], ...updateData }
                 }
             }
+        },
+        async deleteMessagesByConversation(conversationId: number) {
+            // 从数据库中删除该对话的所有消息
+            await db.messages.where({ conversationId }).delete();
+            // 从 store 中删除该对话的所有消息
+            this.items = this.items.filter(item => item.conversationId !== conversationId);
         }
     },
     getters: {

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, protocol, net } from 'electron';
+import { app, BrowserWindow, protocol, net, Menu } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { ipcMain } from "electron";
@@ -72,6 +72,23 @@ const createWindow = async () => {
 
   ipcMain.handle("config:update", async (e, partialConfig: Partial<AppConfigProps>) => {
       return await updateConfig(partialConfig);
+  });
+
+  // 右键菜单处理
+  ipcMain.handle("show-context-menu", async (event, conversationId: number) => {
+      const template = [
+          {
+              label: '删除对话',
+              click: () => {
+                  mainWindow.webContents.send("context-menu-command", {
+                      command: 'delete',
+                      conversationId
+                  });
+              }
+          }
+      ];
+      const menu = Menu.buildFromTemplate(template);
+      menu.popup({ window: mainWindow });
   });
 
   ipcMain.on("start-chat", async (event, data: CreateChatProps) => {
