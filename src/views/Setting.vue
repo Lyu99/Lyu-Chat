@@ -430,7 +430,7 @@ const saveBaiduConfig = () => {
   if (validateBaiduForm()) {
     console.log('百度千帆配置保存成功:', baiduConfig.value);
     // TODO: 这里可以添加实际的保存逻辑，比如存储到 store 或者发送到后端
-    alert('百度千帆配置保存成功！');
+    alert('功能还没做完');
   } else {
     console.log('百度千帆配置验证失败');
   }
@@ -463,7 +463,7 @@ const saveAliConfig = () => {
   if (validateAliForm()) {
     console.log('阿里灵积配置保存成功:', aliConfig.value);
     // TODO: 这里可以添加实际的保存逻辑，比如存储到 store 或者发送到后端
-    alert('阿里灵积配置保存成功！');
+    alert('功能还没做完');
   } else {
     console.log('阿里灵积配置验证失败');
   }
