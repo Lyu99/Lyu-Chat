@@ -8,6 +8,16 @@ import { AppConfigProps } from './types';
 const DEFAULT_CONFIG: AppConfigProps = {
     language: 'zh-CN',
     fontSize: 16,
+    qianfan: {
+        apiKey: 'bce-v3/ALTAK-g2SfDcNW8w2etS0ruJ43L/df314ec1b961549c622ea8e4399a3548cbe79e90',
+        baseURL: 'https://qianfan.baidubce.com/v2/',
+        modelName: '',
+    },
+    dashscope: {
+        apiKey: 'sk-82f9829701634e5dbb14598b0167d4c6',
+        baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+        modelName: '',
+    },
 };
 
 // 配置文件路径

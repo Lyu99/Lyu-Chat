@@ -58,54 +58,38 @@ export function registerIpcHandlers(mainWindow: BrowserWindow) {
 
     // 聊天处理
     ipcMain.on("start-chat", async (event, data: CreateChatProps) => {
-        const { providerName, messages, selectedModel, messageId } = data;
-        const newMessage = await messageMerge(messages);
-        
-        if(providerName === "qianfan") {
-            const client = new OpenAI({
-                apiKey: process.env.DASHSCOPE_API_KEY, // https://console.bce.baidu.com/iam/#/iam/apikey/list
-                baseURL: 'https://qianfan.baidubce.com/v2/', // 千帆ModelBuilder平台地址
-            });
-
-            const stream = await client.chat.completions.create({
-                messages: newMessage as any,
-                model: ModelValue[selectedModel as keyof typeof ModelValue],
-                stream: true,
-            });
-
-            for await (const chunk of stream) {
-                const end = chunk.choices[0]?.finish_reason;
-                const res = chunk.choices[0]?.delta.content;
-                const content = {
-                    messageId,
-                    data: {
-                        is_end: end,
-                        result: res,
-                    }
+        try {
+            const { providerName, messages, selectedModel, messageId } = data;
+            const newMessage = await messageMerge(messages);
+            
+            // 获取配置
+            const config = await getConfig();
+            if(providerName === "qianfan") {
+                const qianfanConfig = config.qianfan;
+                if (!qianfanConfig || !qianfanConfig.apiKey) {
+                    console.error("百度千帆配置未设置");
+                    mainWindow.webContents.send("update-message", {
+                        messageId,
+                        data: {
+                            is_end: "stop",
+                            result: "错误：百度千帆 API Key 未配置，请在设置中配置。",
+                        }
+                    });
+                    return;
                 }
-                mainWindow.webContents.send("update-message", content);
-            }
-        }
-        
-        if(providerName === "dashscope") {
-            const client = new OpenAI(
-                {
-                    // 新加坡和北京地域的API Key不同。获取API Key：https://help.aliyun.com/zh/model-studio/get-api-key
-                    // 若没有配置环境变量，请用阿里云百炼API Key将下行替换为：apiKey: "sk-xxx",
-                    apiKey: process.env.ALI_API_KEY,
-                    // 以下是北京地域base_url，如果使用新加坡地域的模型，需要将base_url替换为：https://dashscope-intl.aliyuncs.com/compatible-mode/v1
-                    baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-                }
-            );
-            const stream = await client.chat.completions.create({
-                model: ModelValue[selectedModel as keyof typeof ModelValue],
-                messages: newMessage as any,
-                stream: true,
-                // 目的：在最后一个chunk中获取本次请求的Token用量。
-                stream_options: { include_usage: true },
-            });
-            for await (const chunk of stream) {
-                if (chunk.choices && chunk.choices.length > 0) {
+
+                const client = new OpenAI({
+                    apiKey: qianfanConfig.apiKey,
+                    baseURL: qianfanConfig.baseURL
+                });
+
+                const stream = await client.chat.completions.create({
+                    messages: newMessage as any,
+                    model: qianfanConfig.modelName || ModelValue[selectedModel as keyof typeof ModelValue],
+                    stream: true,
+                });
+
+                for await (const chunk of stream) {
                     const end = chunk.choices[0]?.finish_reason;
                     const res = chunk.choices[0]?.delta.content;
                     const content = {
@@ -118,6 +102,58 @@ export function registerIpcHandlers(mainWindow: BrowserWindow) {
                     mainWindow.webContents.send("update-message", content);
                 }
             }
+            
+            if(providerName === "dashscope") {
+                const dashscopeConfig = config.dashscope;
+                if (!dashscopeConfig || !dashscopeConfig.apiKey) {
+                    console.error("阿里灵积配置未设置");
+                    mainWindow.webContents.send("update-message", {
+                        messageId,
+                        data: {
+                            is_end: "stop",
+                            result: "错误：阿里灵积 API Key 未配置，请在设置中配置。",
+                        }
+                    });
+                    return;
+                }
+
+                const client = new OpenAI({
+                    apiKey: dashscopeConfig.apiKey,
+                    baseURL: dashscopeConfig.baseURL
+                });
+                
+                const stream = await client.chat.completions.create({
+                    model: dashscopeConfig.modelName || ModelValue[selectedModel as keyof typeof ModelValue],
+                    messages: newMessage as any,
+                    stream: true,
+                    // 目的：在最后一个chunk中获取本次请求的Token用量。
+                    stream_options: { include_usage: true },
+                });
+                
+                for await (const chunk of stream) {
+                    if (chunk.choices && chunk.choices.length > 0) {
+                        const end = chunk.choices[0]?.finish_reason;
+                        const res = chunk.choices[0]?.delta.content;
+                        const content = {
+                            messageId,
+                            data: {
+                                is_end: end,
+                                result: res,
+                            }
+                        }
+                        mainWindow.webContents.send("update-message", content);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("聊天处理错误:", error);
+            mainWindow.webContents.send("update-message", {
+                messageId: data.messageId,
+                data: {
+                    is_end: "stop",
+                    result: `错误：${error instanceof Error ? error.message : String(error)}`,
+                }
+            });
         }
     });
 }

@@ -51,7 +51,15 @@ export interface MessageListRefProps {
 }
 
 // 配置相关类型
+export interface ProviderConfigProps {
+    apiKey: string;
+    baseURL: string;
+    modelName: string;
+}
+
 export interface AppConfigProps {
     language: 'zh-CN' | 'en-US';
     fontSize: number; // 字体大小，单位 px，范围 12-24
+    qianfan?: ProviderConfigProps; // 百度千帆配置
+    dashscope?: ProviderConfigProps; // 阿里灵积配置
 }

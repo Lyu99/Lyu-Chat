@@ -1,12 +1,14 @@
 // 配置 Store
 import { defineStore } from 'pinia';
-import { AppConfigProps } from '../types';
+import { AppConfigProps, ProviderConfigProps } from '../types';
 import i18n from '../plugins/i18n';
 
 export const useConfigStore = defineStore('config', {
     state: (): AppConfigProps => ({
         language: 'zh-CN',
         fontSize: 16,
+        qianfan: undefined,
+        dashscope: undefined,
     }),
 
     actions: {
@@ -16,6 +18,8 @@ export const useConfigStore = defineStore('config', {
                 const config = await window.electronAPI.configGet();
                 this.language = config.language;
                 this.fontSize = config.fontSize;
+                this.qianfan = config.qianfan;
+                this.dashscope = config.dashscope;
                 // 同步语言到 i18n
                 i18n.global.locale.value = config.language === 'en-US' ? 'en' : config.language;
             } catch (error) {
@@ -29,6 +33,8 @@ export const useConfigStore = defineStore('config', {
                 const config: AppConfigProps = {
                     language: this.language,
                     fontSize: this.fontSize,
+                    qianfan: this.qianfan,
+                    dashscope: this.dashscope,
                 };
                 await window.electronAPI.configSave(config);
             } catch (error) {
@@ -43,6 +49,8 @@ export const useConfigStore = defineStore('config', {
                 const newConfig = await window.electronAPI.configUpdate(partialConfig);
                 this.language = newConfig.language;
                 this.fontSize = newConfig.fontSize;
+                this.qianfan = newConfig.qianfan;
+                this.dashscope = newConfig.dashscope;
             } catch (error) {
                 console.error('更新配置失败:', error);
                 throw error;
@@ -64,6 +72,18 @@ export const useConfigStore = defineStore('config', {
             if (fontSize > 24) fontSize = 24;
             this.fontSize = fontSize;
             await this.updateConfig({ fontSize });
+        },
+
+        // 设置百度千帆配置
+        async setQianfanConfig(config: ProviderConfigProps) {
+            this.qianfan = config;
+            await this.updateConfig({ qianfan: config });
+        },
+
+        // 设置阿里灵积配置
+        async setDashscopeConfig(config: ProviderConfigProps) {
+            this.dashscope = config;
+            await this.updateConfig({ dashscope: config });
         },
     },
 });

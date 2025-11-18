@@ -375,6 +375,15 @@ onMounted(async () => {
   await configStore.loadConfig();
   selectedLanguage.value = configStore.language;
   fontSize.value = configStore.fontSize;
+  
+  // 加载 provider 配置
+  if (configStore.qianfan) {
+    baiduConfig.value = { ...configStore.qianfan };
+  }
+  if (configStore.dashscope) {
+    aliConfig.value = { ...configStore.dashscope };
+  }
+  
   // 更新语言选项的标签
   languages.value = [
     { value: 'zh-CN', label: t('settings.language.zhCN') },
@@ -426,11 +435,16 @@ const validateBaiduForm = () => {
   return apiKeyValid && baseURLValid && modelNameValid;
 };
 
-const saveBaiduConfig = () => {
+const saveBaiduConfig = async () => {
   if (validateBaiduForm()) {
-    console.log('百度千帆配置保存成功:', baiduConfig.value);
-    // TODO: 这里可以添加实际的保存逻辑，比如存储到 store 或者发送到后端
-    alert('功能还没做完');
+    try {
+      await configStore.setQianfanConfig(baiduConfig.value);
+      console.log('百度千帆配置保存成功:', baiduConfig.value);
+      alert('百度千帆配置保存成功！');
+    } catch (error) {
+      console.error('保存百度千帆配置失败:', error);
+      alert('保存失败，请重试！');
+    }
   } else {
     console.log('百度千帆配置验证失败');
   }
@@ -459,11 +473,16 @@ const validateAliForm = () => {
   return apiKeyValid && baseURLValid && modelNameValid;
 };
 
-const saveAliConfig = () => {
+const saveAliConfig = async () => {
   if (validateAliForm()) {
-    console.log('阿里灵积配置保存成功:', aliConfig.value);
-    // TODO: 这里可以添加实际的保存逻辑，比如存储到 store 或者发送到后端
-    alert('功能还没做完');
+    try {
+      await configStore.setDashscopeConfig(aliConfig.value);
+      console.log('阿里灵积配置保存成功:', aliConfig.value);
+      alert('阿里灵积配置保存成功！');
+    } catch (error) {
+      console.error('保存阿里灵积配置失败:', error);
+      alert('保存失败，请重试！');
+    }
   } else {
     console.log('阿里灵积配置验证失败');
   }
