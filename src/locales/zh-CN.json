@@ -1,0 +1,50 @@
+{
+  "app": {
+    "title": "我的应用",
+    "name": "AI 聊天助手"
+  },
+  "navigation": {
+    "home": "首页",
+    "conversation": "对话",
+    "settings": "设置"
+  },
+  "settings": {
+    "title": "应用设置",
+    "language": {
+      "label": "语言",
+      "zhCN": "简体中文",
+      "enUS": "English"
+    },
+    "fontSize": {
+      "label": "字体大小",
+      "range": "范围: 12-24",
+      "unit": "px"
+    },
+    "preview": {
+      "title": "预览效果",
+      "sampleText": "这是一段示例文本，用于预览当前字体大小。"
+    },
+    "info": {
+      "autoSave": "配置会自动保存到本地文件:"
+    }
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "back": "返回",
+    "loading": "加载中...",
+    "success": "操作成功",
+    "error": "操作失败",
+    "send": "发送"
+  },
+  "conversation": {
+    "newChat": "新对话",
+    "selectModel": "选择模型",
+    "inputPlaceholder": "输入消息...",
+    "send": "发送"
+  }
+}
+

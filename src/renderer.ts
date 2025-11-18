@@ -8,6 +8,7 @@ import Setting from "./views/Setting.vue";
 import { createPinia } from 'pinia';
 import { useConversationStore } from "./store/conversation";
 import "highlight.js/styles/github-dark.min.css";
+import i18n from './plugins/i18n';
 
 const pinia = createPinia()
 const routes = [
@@ -37,4 +38,4 @@ router.beforeEach((to) => {
     }
 })
 
-createApp(App).use(router).use(pinia).mount('#app');
+createApp(App).use(router).use(pinia).use(i18n).mount('#app');

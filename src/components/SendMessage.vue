@@ -21,18 +21,20 @@
              v-model="sendValue"
              :disabled="disabled"
       >
-      <Button class="absolute right-2" icon-name="radix-icons:paper-plane" @click="handleSend" :disabled="disabled">发送</Button>
+      <Button class="absolute right-2" icon-name="radix-icons:paper-plane" @click="handleSend" :disabled="disabled">{{ t('common.send') }}</Button>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import Button from "../components/Button.vue";
-import { Icon } from '@iconify/vue'
+import { Icon } from '@iconify/vue';
+import { useI18n } from 'vue-i18n';
 
 const fileInput = ref<HTMLInputElement | null>(null);
 const sendValue = defineModel<string>();
 const imagePreview = ref();
+const { t } = useI18n();
 
 const emit = defineEmits<{
   onSend: [question: string, imagePath?: string]

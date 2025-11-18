@@ -1,0 +1,50 @@
+{
+  "app": {
+    "title": "My App",
+    "name": "AI Chat Assistant"
+  },
+  "navigation": {
+    "home": "Home",
+    "conversation": "Conversation",
+    "settings": "Settings"
+  },
+  "settings": {
+    "title": "Application Settings",
+    "language": {
+      "label": "Language",
+      "zhCN": "简体中文",
+      "enUS": "English"
+    },
+    "fontSize": {
+      "label": "Font Size",
+      "range": "Range: 12-24",
+      "unit": "px"
+    },
+    "preview": {
+      "title": "Preview",
+      "sampleText": "This is a sample text to preview the current font size."
+    },
+    "info": {
+      "autoSave": "Settings will be automatically saved to local file:"
+    }
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "send": "Send"
+  },
+  "conversation": {
+    "newChat": "New Chat",
+    "selectModel": "Select Model",
+    "inputPlaceholder": "Type a message...",
+    "send": "Send"
+  }
+}
+

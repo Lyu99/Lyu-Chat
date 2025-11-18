@@ -1,6 +1,7 @@
 // 配置 Store
 import { defineStore } from 'pinia';
 import { AppConfigProps } from '../types';
+import i18n from '../plugins/i18n';
 
 export const useConfigStore = defineStore('config', {
     state: (): AppConfigProps => ({
@@ -15,6 +16,8 @@ export const useConfigStore = defineStore('config', {
                 const config = await window.electronAPI.configGet();
                 this.language = config.language;
                 this.fontSize = config.fontSize;
+                // 同步语言到 i18n
+                i18n.global.locale.value = config.language === 'en-US' ? 'en' : config.language;
             } catch (error) {
                 console.error('加载配置失败:', error);
             }
@@ -49,6 +52,8 @@ export const useConfigStore = defineStore('config', {
         // 设置语言
         async setLanguage(language: 'zh-CN' | 'en-US') {
             this.language = language;
+            // 同步语言到 i18n
+            i18n.global.locale.value = language === 'en-US' ? 'en' : language;
             await this.updateConfig({ language });
         },
 
