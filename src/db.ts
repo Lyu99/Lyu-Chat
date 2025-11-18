@@ -17,6 +17,6 @@ db.version(1).stores({
 export const initProviders = async () => {
     const count = await db.providers.count()
     if(count === 0) {
-        db.providers.bulkAdd(providers)
+        await db.providers.bulkAdd(providers)
     }
 }

@@ -28,12 +28,15 @@ import ConversationList from "./components/ConversationList.vue";
 import Button from "./components/Button.vue";
 import { initProviders } from "./db";
 import { useConversationStore } from "./store/conversation";
+import { useProviderStore } from "./store/provider";
 import { useI18n } from 'vue-i18n';
 const conversationStore = useConversationStore();
+const providerStore = useProviderStore();
 const conversations = computed(() => conversationStore.items);
 const { t } = useI18n();
 onMounted(async () => {
   await initProviders();
+  await providerStore.fetchProviders();
   await conversationStore.fetchConversations();
 })
 </script>

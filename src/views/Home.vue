@@ -9,23 +9,21 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import ProviderSelect from "../components/ProviderSelect.vue";
 import SendMessage from "../components/SendMessage.vue";
 import { db } from "../db";
-import { ProviderProps } from "../types";
 import { useRouter } from "vue-router";
 import { useConversationStore } from "../store/conversation";
+import { useProviderStore } from "../store/provider";
 
-const providers = ref<ProviderProps[]>([]);
 const inMessageText = ref("");
 const selectProvider = ref("");
 const router = useRouter();
 const conversationStore = useConversationStore();
+const providerStore = useProviderStore();
 
-onMounted(async () => {
-   providers.value = await db.providers.toArray()
-});
+const providers = computed(() => providerStore.items);
 const modelInfo = computed(() => {
   const [providerId, selectedModel] = selectProvider.value.split("/");
   return {

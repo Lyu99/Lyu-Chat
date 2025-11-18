@@ -20,6 +20,7 @@ import { db } from "../db";
 import dayjs from "dayjs";
 import { useConversationStore } from "../store/conversation";
 import { useMessageStore } from "../store/message";
+import { useProviderStore } from "../store/provider";
 
 const messageListRef = ref<MessageListRefProps>()
 const route = useRoute();
@@ -27,6 +28,7 @@ let currentConversationId = ref(parseInt(route.params.id as string));
 const initMessageId = parseInt(route.query.init as string);
 const conversationStore = useConversationStore();
 const messageStore = useMessageStore();
+const providerStore = useProviderStore();
 const conversation: ComputedRef<ConversationProps | undefined> = computed(() => conversationStore.getConversationId(currentConversationId.value));
 const messageList = computed(() => messageStore.items);
 const sendValue = ref("");
@@ -70,7 +72,7 @@ const createInitMessage = async () => {
   const messageId = await messageStore.createMessage(createData);
   await viewIntoEnd();
   if(conversation.value) {
-    const provider = await db.providers.where({ id: conversation.value.providerId }).first();
+    const provider = providerStore.getProviderById(conversation.value.providerId);
     if(provider) {
       window.electronAPI.startChat({
         messages: sendMessageArr.value,
