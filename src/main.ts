@@ -56,7 +56,7 @@ const createWindow = async () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

@@ -1,8 +1,8 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
 import { MakerSquirrel } from '@electron-forge/maker-squirrel';
 import { MakerZIP } from '@electron-forge/maker-zip';
-import { MakerDeb } from '@electron-forge/maker-deb';
-import { MakerRpm } from '@electron-forge/maker-rpm';
+// import { MakerDeb } from '@electron-forge/maker-deb';
+// import { MakerRpm } from '@electron-forge/maker-rpm';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
@@ -11,14 +11,23 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     name: "LyuChat",
-    icon: "./assets/icon"
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerZIP({}, ['darwin']),
-    new MakerRpm({}),
-    new MakerDeb({}),
+     new MakerSquirrel({
+      // 应用信息
+      name: 'LyuChat',
+      authors: 'Lyu',
+      description: 'A chat application',
+      // 安装程序配置
+      // setupIcon: './assets/icon.ico',  // Windows 安装图标
+      // iconUrl: 'https://raw.githubusercontent.com/your-repo/vchat/main/assets/icon.ico', // 远程图标URL
+      // 快捷方式设置
+      setupExe: 'LyuChat-Setup.exe',  // 安装程序名称
+    }),
+    new MakerZIP({}, ['win32']),
+    // new MakerRpm({}),
+    // new MakerDeb({}),
   ],
   plugins: [
     new VitePlugin({
