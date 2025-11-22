@@ -1,16 +1,34 @@
 <template>
-<div class="h-[10%] bg-gray-200 border-b border-gray-300 flex items-center px-3 justify-between" v-if="conversation">
-  <h3 class="font-semibold  text-gray-900">{{ conversation.title }}</h3>
-  <span class="text-sm text-gray-500">{{ dayjs(conversation.updatedAt).format("YYYY-MM-DD") }}</span>
+<div class="h-16 min-h-[64px] bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center px-6 justify-between sticky top-0 z-10" v-if="conversation">
+  <div class="flex items-center gap-3 overflow-hidden">
+    <div class="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center border border-primary-100">
+      <Icon icon="radix-icons:chat-bubble" class="w-4 h-4" />
+    </div>
+    <div class="flex flex-col">
+      <h3 class="font-semibold text-gray-900 truncate leading-tight text-sm">{{ conversation.title }}</h3>
+      <span class="text-xs text-gray-500 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+        {{ conversation.selectedModel }}
+      </span>
+    </div>
+  </div>
+  <div class="text-xs text-gray-400 font-medium bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100">
+    {{ dayjs(conversation.updatedAt).format("MMM D, YYYY") }}
+  </div>
 </div>
-<div class="w-[80%] mx-auto h-[75%] overflow-y-auto pt-2">
-  <MessageList :messageList="messageList" ref="messageListRef" />
+<div class="flex-1 w-full overflow-y-auto">
+  <div class="max-w-3xl mx-auto h-full px-4">
+    <MessageList :messageList="messageList" ref="messageListRef" />
+  </div>
 </div>
-<div class="w-[80%] mx-auto h-[15%] flex items-center">
-  <SendMessage @on-send="sendMessage" v-model="sendValue" :disabled="messageStore.getIsDisabled" />
+<div class="w-full bg-white pb-6 pt-2">
+  <div class="max-w-3xl mx-auto px-4">
+    <SendMessage @on-send="sendMessage" v-model="sendValue" :disabled="messageStore.getIsDisabled" />
+  </div>
 </div>
 </template>
 <script setup lang="ts">
+import { Icon } from "@iconify/vue";
 import {ref, onMounted, watch, computed, ComputedRef, nextTick} from "vue";
 import { useRoute } from 'vue-router';
 import MessageList from "../components/MessageList.vue";

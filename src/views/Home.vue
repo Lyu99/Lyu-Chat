@@ -1,10 +1,26 @@
 <template>
-  <div class="w-[80%] h-full mx-auto">
-    <div class="h-[85%] flex items-center">
-      <ProviderSelect :items="providers" v-model="selectProvider"></ProviderSelect>
+  <div class="h-full flex flex-col max-w-3xl mx-auto px-6 relative">
+    <!-- Main content area centered -->
+    <div class="flex-1 flex flex-col justify-center items-center gap-8 -mt-20">
+      
+      <div class="text-center space-y-2">
+        <h1 class="text-3xl font-bold text-gray-900">LyuChat</h1>
+        <p class="text-gray-500">Select a model and start chatting</p>
+      </div>
+
+      <div class="w-full max-w-md">
+        <ProviderSelect :items="providers" v-model="selectProvider"></ProviderSelect>
+      </div>
     </div>
-    <div class="h-[15%] flex items-center">
-      <SendMessage v-model="inMessageText" @on-send="creatConversation" :disabled="selectProvider === ''"></SendMessage>
+
+    <!-- Input area fixed at bottom or just below -->
+    <div class="pb-12 w-full">
+       <SendMessage 
+        v-model="inMessageText" 
+        @on-send="creatConversation" 
+        :disabled="selectProvider === ''"
+        placeholder="Type a message to start..."
+      ></SendMessage>
     </div>
   </div>
 </template>

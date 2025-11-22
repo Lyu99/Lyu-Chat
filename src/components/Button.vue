@@ -1,7 +1,6 @@
 <template>
   <button
-      class="vk-button shadow-sm inline-flex items-center justify-center
-              disabled:opacity-50 disabled:pointer-events-none"
+      class="vk-button shadow-sm inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
       :class="[colorClasses, sizeClasses]"
       :disabled="disabled || loading"
   >
@@ -13,8 +12,8 @@
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 
-export type ButtonColor = 'green' | 'purple'
-export type ButtonSize = 'large' | 'small'
+export type ButtonColor = 'primary' | 'green' | 'purple' | 'neutral'
+export type ButtonSize = 'large' | 'small' | 'default'
 
 export interface ButtonProps {
   color?: ButtonColor;
@@ -30,18 +29,33 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<ButtonProps>(), {
-  color: 'green'
+  color: 'primary',
+  size: 'default'
 })
+
 const colorVariants: Record<ButtonColor, any> = {
+  'primary': {
+    plain: 'bg-primary-50 text-primary-600 hover:bg-primary-100 border border-primary-200 hover:border-primary-300 focus:ring-primary-500',
+    normal: 'bg-primary-600 text-white hover:bg-primary-700 border border-transparent focus:ring-primary-500 shadow-primary-500/30'
+  },
+  // Backward compatibility - mapping green to primary style or keeping it distinct if needed. 
+  // Let's make it a nice emerald green if someone specifically asked for green, 
+  // but since the default was green and we want to change the theme, let's map green to primary for now or just update default prop.
+  // The user wants to "optimize styling", so switching the default to the new primary is good.
   'green': {
-    plain: 'bg-green-50 text-green-700 hover:bg-green-700 border border-green-700 hover:text-white',
-    normal: 'bg-green-700 text-white hover:bg-green-700/90 border border-green-700'
+     plain: 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200 focus:ring-emerald-500',
+     normal: 'bg-emerald-600 text-white hover:bg-emerald-700 border border-transparent focus:ring-emerald-500'
   },
   'purple': {
-    plain: 'bg-purple-50 text-purple-700 hover:bg-purple-700 border border-purple-700 hover:text-white',
-    normal: 'bg-purple-700 text-white hover:bg-purple-700/90 border border-purple-700'
+    plain: 'bg-purple-50 text-purple-600 hover:bg-purple-100 border border-purple-200 focus:ring-purple-500',
+    normal: 'bg-purple-600 text-white hover:bg-purple-700 border border-transparent focus:ring-purple-500'
+  },
+  'neutral': {
+    plain: 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400 focus:ring-gray-500',
+    normal: 'bg-gray-900 text-white hover:bg-gray-800 border border-transparent focus:ring-gray-500'
   }
 }
+
 const iconWithLoading = computed(() => {
   if (props.loading) {
     return 'line-md:loading-loop'
@@ -49,22 +63,20 @@ const iconWithLoading = computed(() => {
     return props.iconName
   }
 })
+
 const colorClasses = computed(() => {
-  if (props.plain) {
-    return colorVariants[props.color].plain
-  } else {
-    return colorVariants[props.color].normal
-  }
+  const variant = colorVariants[props.color] || colorVariants['primary'];
+  return props.plain ? variant.plain : variant.normal;
 })
+
 const sizeClasses = computed(() => {
-  if (!props.size) {
-    return 'h-[32px] py-[8px] px-[15px] text-sm rounded-[4px]'
-  } else {
-    if (props.size === 'large') {
-      return 'h-[40px] py-[12px] px-[19px] rounded-[4px] text-base'
-    } else {
-      return 'h-[24px] py-[11px] px-[5px] rounded-[3px] text-xs'
-    }
+  switch (props.size) {
+    case 'large':
+      return 'h-[42px] px-5 text-base rounded-lg'
+    case 'small':
+      return 'h-[32px] px-3 text-xs rounded-md'
+    default:
+      return 'h-[36px] px-4 text-sm rounded-md'
   }
 })
 </script>

@@ -1,23 +1,32 @@
 <template>
-  <div class="conversation-list">
+  <div class="conversation-list px-2 py-2 space-y-1">
     <div
-        class="item border-gray-300 border-t cursor-pointer p-2"
+        class="item group relative flex flex-col gap-1 p-3 rounded-lg cursor-pointer transition-colors duration-200"
         v-for="item of items"
         :key="item.id"
         @click="gotoConversation(item)"
         @contextmenu.prevent="showContextMenu(item)"
         :class="{
-          'bg-gray-400 hover:bg-gray-400': conversationStore.selectId === item.id,
-          'bg-white hover:bg-gray-200': conversationStore.selectId !== item.id
+          'bg-primary-50 text-primary-900': conversationStore.selectId === item.id,
+          'text-gray-700 hover:bg-gray-100': conversationStore.selectId !== item.id
         }"
     >
-      <div class="flex justify-between items-center text-sm leading-5 text-gray-500">
-        <span>{{ item.selectedModel }}</span>
-        <span>{{ dayjs(item.updatedAt).format("YYYY-MM-DD") }}</span>
+      <div class="flex justify-between items-center">
+        <h2 class="font-medium text-sm truncate flex-1 mr-2" :class="conversationStore.selectId === item.id ? 'text-primary-900' : 'text-gray-900'">
+          {{ item.title || 'New Chat' }}
+        </h2>
+        <span class="text-[10px] opacity-60" :class="conversationStore.selectId === item.id ? 'text-primary-700' : 'text-gray-500'">
+            {{ dayjs(item.updatedAt).format("MM-DD") }}
+        </span>
       </div>
-      <h2 class="font-semibold leading-6 text-gray-900 truncate">
-        {{ item.title }}
-      </h2>
+      <div class="flex justify-between items-center text-xs">
+        <span class="px-1.5 py-0.5 rounded text-[10px] border" 
+              :class="conversationStore.selectId === item.id 
+                ? 'bg-white/50 border-primary-200 text-primary-700' 
+                : 'bg-gray-50 border-gray-200 text-gray-500 group-hover:border-gray-300'">
+          {{ item.selectedModel }}
+        </span>
+      </div>
     </div>
   </div>
 </template>

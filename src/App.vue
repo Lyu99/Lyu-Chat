@@ -1,23 +1,31 @@
 <template>
-  <div class="flex items-center justify-between h-screen">
-    <div class="w-[300px] bg-gray-200 h-full border-r border-gray-300">
-      <div class="h-[90%] overflow-y-auto">
+  <div class="flex h-screen w-full bg-white">
+    <!-- Sidebar -->
+    <div class="flex flex-col w-[280px] bg-gray-50 border-r border-gray-200 h-full">
+      <!-- Conversation List -->
+      <div class="flex-1 overflow-y-auto scrollbar-hide">
         <ConversationList :items="conversations" />
       </div>
-      <div class="h-[10%] grid grid-cols-2 gap-2 p-2">
-        <RouterLink to="/">
-          <Button icon-name="radix-icons:chat-bubble" class="w-full">
-            {{  t('common.newChat')  }}
-          </Button>
-        </RouterLink>
-        <RouterLink to="/setting">
-          <Button icon-name="radix-icons:gear" plain class="w-full">
-            {{  t('common.setting')  }}
-          </Button>
-        </RouterLink>
+      
+      <!-- Bottom Actions -->
+      <div class="p-4 border-t border-gray-200 bg-gray-50">
+        <div class="grid grid-cols-2 gap-3">
+          <RouterLink to="/" class="w-full">
+            <Button icon-name="radix-icons:chat-bubble" class="w-full justify-center" size="small">
+              {{  t('common.newChat')  }}
+            </Button>
+          </RouterLink>
+          <RouterLink to="/setting" class="w-full">
+            <Button icon-name="radix-icons:gear" plain class="w-full justify-center" size="small">
+              {{  t('common.setting')  }}
+            </Button>
+          </RouterLink>
+        </div>
       </div>
     </div>
-    <div class="h-full flex-1">
+
+    <!-- Main Content -->
+    <div class="flex-1 h-full relative flex flex-col bg-white">
       <RouterView />
     </div>
   </div>
@@ -41,5 +49,11 @@ onMounted(async () => {
 })
 </script>
 <style scoped>
-
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 </style>
